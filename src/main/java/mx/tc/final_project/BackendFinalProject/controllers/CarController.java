@@ -1,70 +1,46 @@
 package mx.tc.final_project.BackendFinalProject.controllers;
 
-import mx.tc.final_project.BackendFinalProject.dao.CarDao;
 import mx.tc.final_project.BackendFinalProject.models.Car;
+import mx.tc.final_project.BackendFinalProject.service.CarRentedService;
+import mx.tc.final_project.BackendFinalProject.service.CarService;
+import net.bytebuddy.implementation.attribute.MethodAttributeAppender;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class CarController {
 
     @Autowired
-    private CarDao carDao;
+    private CarService carService;
 
-    @RequestMapping (value = "cars")
+
+    @GetMapping(value = "cars")
     public List<Car> getCar(){
-        return carDao.getCars();
+        return carService.carListed();
     }
 
-    @RequestMapping (value = "car3")
-    public Car editCar(){
-        Car car = new Car();
-        car.setCarID(12);
-        car.setBrand("VW");
-        car.setColor("red");
-        car.setCarType("Ban");
-        car.setPlate("XXDDRR");
-        car.setSeats(7);
-        car.setManual(false);
-        car.setAvailable(true);
-        car.setElectric(false);
-        car.setPrice(5400.00F);
-        return car;
-    }
+    @GetMapping(value = "cars_available")
+    public List<Car> getCarsAvailable(@RequestBody Map<String,LocalDate> dates){
 
-    @RequestMapping (value = "car2")
-    public Car deleteCar(){
-        Car car = new Car();
-        car.setCarID(12);
-        car.setBrand("VW");
-        car.setColor("red");
-        car.setCarType("Ban");
-        car.setPlate("XXDDRR");
-        car.setSeats(7);
-        car.setManual(false);
-        car.setAvailable(true);
-        car.setElectric(false);
-        car.setPrice(5400.00F);
-        return car;
-    }
+        LocalDate dateFrom = dates.get("rentedFrom");
+        LocalDate dateTo = dates.get("rentedTo");
 
-    @RequestMapping (value = "car1")
-    public Car searchCar(){
-        Car car = new Car();
-        car.setCarID(12);
-        car.setBrand("VW");
-        car.setColor("red");
-        car.setCarType("Ban");
-        car.setPlate("XXDDRR");
-        car.setSeats(7);
-        car.setManual(false);
-        car.setAvailable(true);
-        car.setElectric(false);
-        car.setPrice(5400.00F);
-        return car;
+        List<Car> returnedList = new ArrayList<>();
+        List<Car> carsAvailable = carService.findAvailableCars();
+        carsAvailable.stream().forEach(car -> returnedList.add(car));
+        List<Integer> carsRentedAvailable = carService.findCarsAvailableRentedID(dateFrom, dateTo);
+        carsRentedAvailable.stream().forEach(carID->returnedList.add(carService.findCarByID(carID)));
+        return returnedList;
     }
 
 }
