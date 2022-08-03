@@ -15,8 +15,8 @@ public interface CarDao extends CrudRepository<Car, Integer> {
 
     @Query(
             value = "select c.car_id from cars c right join cars_rented cr on c.car_id = cr.car_id " +
-                    "where (:rentFrom>date_from and :rentTo> date_from and :rentFrom>date_to and :rentTo> date_to)" +
-                    "or (:rentFrom<date_from and :rentTo< date_from and :rentFrom<date_to and :rentTo< date_to);",
+                    "where (:rentFrom>date_from and :rentTo> date_from and :rentFrom>date_to and :rentTo> date_to and returned = false and canceled = false)" +
+                    "or (:rentFrom<date_from and :rentTo< date_from and :rentFrom<date_to and :rentTo< date_to and returned = false and canceled = false);",
             nativeQuery = true)
     public List<Integer> getCarsAvailableRentedID(@Param("rentFrom") LocalDate rentFrom, @Param("rentTo") LocalDate rentTo);
 

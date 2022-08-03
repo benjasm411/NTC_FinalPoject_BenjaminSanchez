@@ -33,7 +33,7 @@ public class Car implements Serializable {
     @Getter @Setter @Column(name = "available", nullable = false)
     private Boolean available;
     @Getter @Setter @Column(name = "price", nullable = false)
-    private Float price;
+    private Double price;
 
 
 }

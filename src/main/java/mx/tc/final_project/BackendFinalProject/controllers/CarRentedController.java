@@ -82,6 +82,7 @@ public class CarRentedController {
         carRented.setDateFrom(dateFrom);
         carRented.setDateTo(dateTo);
         carRented.setReturned(false);
+        carRented.setCanceled(false);
 
         carRentedService.save(carRented);
     }
@@ -101,12 +102,14 @@ public class CarRentedController {
         carRentedService.save(carReturned);
     }
 
-    @DeleteMapping(value = "cancel_reservation")
+    @PutMapping(value = "cancel_reservation")
     public void cancelReservation (@RequestBody Map<String, String> rentNumber){
         Integer id = carRentedService.getCarRentIDByCode(rentNumber.get("rentNumber"));
         setTrueState(id);
+        System.out.println(id);
         CarRented car = carRentedService.findCarRentedByCode(rentNumber.get("rentNumber"));
-        carRentedService.delete(car);
+        car.setCanceled(true);
+        carRentedService.save(car);
     }
 
 }

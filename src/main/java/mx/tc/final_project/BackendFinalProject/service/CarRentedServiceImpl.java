@@ -54,6 +54,7 @@ public class CarRentedServiceImpl implements CarRentedService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CarRented findCarRentedByCode(String code) {
         return carRentedDao.getCarRentedByCode(code);
     }
