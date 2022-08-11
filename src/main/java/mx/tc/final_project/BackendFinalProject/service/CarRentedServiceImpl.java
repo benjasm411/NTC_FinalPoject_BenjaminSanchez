@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -58,5 +59,36 @@ public class CarRentedServiceImpl implements CarRentedService {
     public CarRented findCarRentedByCode(String code) {
         return carRentedDao.getCarRentedByCode(code);
     }
+
+    @Override
+    @Transactional
+    public Boolean findCanceledStatusById(Integer carId) {
+        return carRentedDao.getCanceledStatusById(carId);
+    }
+
+    @Override
+    @Transactional
+    public Boolean findReturnedStatusById(Integer carId) {
+        return carRentedDao.getReturnedStatusById(carId);
+    }
+
+    @Override
+    @Transactional
+    public String findNameByCode(String code) {
+        return carRentedDao.getNameByCode(code);
+    }
+
+    @Override
+    @Transactional
+    public Date findDateFromByCode(String code) {
+        return carRentedDao.getDateFromByCode(code);
+    }
+
+    @Override
+    @Transactional
+    public Date findDateToByCode(String code) {
+        return carRentedDao.getDateToByCode(code);
+    }
+
 
 }

@@ -8,34 +8,32 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
+@RequestMapping("users")
+@CrossOrigin
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    List<String> usersName = new ArrayList<>();
-
-    @GetMapping("existed_user")
-    public String userTaken(){
-        return "Your user is already taken, choose other";
+    @PutMapping("existed_user")
+    public boolean userTaken(@RequestBody Map<String, String> userName1){
+        String userName = userName1.get("userName");
+        User user = userService.findExistedUserByUserName(userName);
+        System.out.println("\n\n"+userName+"\n\n");
+        //System.out.println("\n\n"+user+"\n\n");
+        if (user == null){
+            // True means continue
+            return true;
+        }
+        // False means the process is denied
+        return false;
     }
 
     @PostMapping(value="new_user")
     public void newUser(@RequestBody User user){
-        boolean state = false;
-        for (String name:
-             usersName) {
-            if (user.getUserName().equals(name)){
-                state = true;
-                break;
-            }
-        }
-        if (state){
-            userTaken();
-        } else {
             userService.save(user);
-        }
     }
 }

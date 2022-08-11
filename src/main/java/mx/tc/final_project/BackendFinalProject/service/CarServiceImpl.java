@@ -47,7 +47,7 @@ public class CarServiceImpl implements CarService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Integer> findCarsAvailableRentedID(LocalDate rentedFrom, LocalDate rentedTo) {
+    public List<Car> findCarsAvailableRentedID(LocalDate rentedFrom, LocalDate rentedTo) {
         return carDao.getCarsAvailableRentedID(rentedFrom, rentedTo);
     }
 
@@ -61,6 +61,12 @@ public class CarServiceImpl implements CarService{
     @Transactional(readOnly = true)
     public Integer findCarIdByPlate(String plate) {
         return carDao.getCarIdByPlate(plate);
+    }
+
+    @Override
+    @Transactional
+    public List<Car> findCarsFiltered(String query){
+        return carDao.getCarsFiltered(query);
     }
 
 }

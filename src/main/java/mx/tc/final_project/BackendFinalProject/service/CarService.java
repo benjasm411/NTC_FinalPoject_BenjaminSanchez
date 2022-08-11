@@ -12,7 +12,8 @@ public interface CarService {
     public void  delete(Car car);
     public Car findCar(Car car);
     public List<Car> findAvailableCars();
-    public List<Integer> findCarsAvailableRentedID(LocalDate rentedFrom, LocalDate rentedTo);
+    public List<Car> findCarsAvailableRentedID(LocalDate rentedFrom, LocalDate rentedTo);
     public Car findCarByID(Integer id);
     public Integer findCarIdByPlate(String plate);
+    public List<Car> findCarsFiltered(String query);
 }

@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/rents")
+@CrossOrigin
 public class CarRentedController {
 
     @Autowired
@@ -61,7 +64,7 @@ public class CarRentedController {
     }
 
     @PostMapping(value = "rent_car")
-    public void setARent(@RequestBody Map<String, Object> data){
+    public String setARent(@RequestBody Map<String, Object> data){
 
         LocalDate dateFrom = LocalDate.parse((CharSequence) data.get("rentedFrom"));
         LocalDate dateTo = LocalDate.parse((CharSequence) data.get("rentedTo"));
@@ -85,12 +88,25 @@ public class CarRentedController {
         carRented.setCanceled(false);
 
         carRentedService.save(carRented);
+        return rentCode;
     }
 
-    @GetMapping(value = "verify")
+    @PutMapping(value = "verify")
     public Car verifyReservation(@RequestBody Map<String, String> rentNumber){
         Integer id = carRentedService.getCarRentIDByCode(rentNumber.get("rentNumber"));
         return carService.findCarByID(id);
+    }
+
+    @PutMapping(value = "verifyState")
+    public String verifyCarState(@RequestBody Map<String, Integer> carId){
+        Boolean canceled = carRentedService.findCanceledStatusById(carId.get("carID"));
+        Boolean returned = carRentedService.findReturnedStatusById(carId.get("carID"));
+        if (canceled && !returned){
+            return "canceled";
+        }else if (returned && !canceled) {
+            return "returned";
+        }
+        return null;
     }
 
     @PutMapping(value = "return_car")
@@ -106,10 +122,26 @@ public class CarRentedController {
     public void cancelReservation (@RequestBody Map<String, String> rentNumber){
         Integer id = carRentedService.getCarRentIDByCode(rentNumber.get("rentNumber"));
         setTrueState(id);
-        System.out.println(id);
+        //System.out.println(id);
         CarRented car = carRentedService.findCarRentedByCode(rentNumber.get("rentNumber"));
         car.setCanceled(true);
         carRentedService.save(car);
+    }
+
+    @PutMapping(value = "find_user_data")
+    public ArrayList getUsersDataByCode(@RequestBody Map<String, String> code){
+        ArrayList list = new ArrayList<>();
+        String rentalCode = code.get("code");
+
+        String name = carRentedService.findNameByCode(rentalCode);
+        Date from = carRentedService.findDateFromByCode(rentalCode);
+        Date to = carRentedService.findDateToByCode(rentalCode);
+
+        list.add(name);
+        list.add(from);
+        list.add(to);
+
+        return list;
     }
 
 }

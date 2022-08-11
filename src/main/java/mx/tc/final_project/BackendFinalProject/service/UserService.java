@@ -12,5 +12,6 @@ public interface UserService {
     public void delete(User user);
     public User findUser(User user);
     public Integer findUserIdByUserName(String userName);
+    public User findExistedUserByUserName(String userName1);
 
 }

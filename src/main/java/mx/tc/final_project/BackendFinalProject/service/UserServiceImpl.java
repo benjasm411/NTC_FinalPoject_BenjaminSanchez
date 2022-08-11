@@ -43,4 +43,10 @@ public class UserServiceImpl implements UserService{
     public Integer findUserIdByUserName(String userName) {
         return userDao.getUserIdByUserName(userName);
     }
+
+    @Override
+    @Transactional
+    public User findExistedUserByUserName(String userName1) {
+        return userDao.getExistedUserByUserName(userName1);
+    }
 }
